@@ -1,0 +1,19 @@
+{
+  "name": "csv-tr",
+  "version": "1.0.0",
+  "description": "utility to transform csv files",
+  "main": "lib/csvTr.js",
+  "bin": {
+    "csv-tr": "bin/csv-tr.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Martin Gonzalez <tin@devtin.io>",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^8.3.0",
+    "csv-parser": "^3.0.0",
+    "ramda": "^0.27.1"
+  }
+}
