@@ -7,8 +7,8 @@ Utility to transform csv files
 Transforming long csv files using graphic user interfaces may not be the most efficient at times. I wanted a utility to
 help me transform long csv files. This utility should:
 
-- [Filter entries](#filtering-entries)
-- [Transform entries](#transforming-entries)
+- [Filter entries using JS expression](#filtering-entries)
+- [Transform entries using JS expression](#transforming-entries)
 - [Select headers](#)
 
 ## CLI Usage
@@ -60,16 +60,16 @@ csv-tr contacts.csv -f "/@gmail.com$/i.test(entry.email)" > gmail-contacts.csv
 Transforming values
 
 ```shell
-csv-tr contacts.csv -t "entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase();" > contacts-uppercase.csv
+csv-tr contacts.csv -t "entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); entry.initial = entry.firstName[0]" > contacts-uppercase.csv
 ```
 
 `contacts-uppercase.csv` will look like
 
 ```csv
-"name","email","state"
-"JUAN","JUAN@GMAIL.COM","FL"
-"MIGUEL","MIGUEL@HOTMAIL.COM","NY"
-"JESUS","JESUS@GMAIL.COM","NY"
+"name","email","state","initial"
+"JUAN","JUAN@GMAIL.COM","FL","J"
+"MIGUEL","MIGUEL@HOTMAIL.COM","NY","M"
+"JESUS","JESUS@GMAIL.COM","NY","J"
 ```
 
 ### Including only certain headers 

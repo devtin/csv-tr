@@ -1,4 +1,4 @@
-"name","email","state"
-"JUAN","JUAN@GMAIL.COM","FL"
-"MIGUEL","MIGUEL@HOTMAIL.COM","NY"
-"JESUS","JESUS@GMAIL.COM","NY"
+"name","email","state","initial"
+"JUAN","JUAN@GMAIL.COM","FL","J"
+"MIGUEL","MIGUEL@HOTMAIL.COM","NY","M"
+"JESUS","JESUS@GMAIL.COM","NY","J"
