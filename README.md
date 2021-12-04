@@ -116,7 +116,7 @@ const { csvTr } = require('csv-tr');
 
 fs.createReadStream('contacts.csv').pipe(csvTr({
     // filter: (entry) => { return /@gmail.com$/i.test(entry.email) },
-    // transform: (entry) => { entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); return entry }
+    // transformer: (entry) => { entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); return entry }
     // only: ['email', 'state]
     // exclude: ['email', 'state]
 })).pipe(fs.createWriteStream('result.csv'))
