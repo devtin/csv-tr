@@ -107,7 +107,7 @@ Jesus
 
 ### Sorting entries by header
 
-Sorting by `state` -> `ASC` and `name` -> `DESC`:
+Sorting by `state` -> `DESC` and `name` -> `ASC`:
 
 ```shell
 csv-tr contacts.csv -s state:-1,name:1 > contacts-sort.csv
