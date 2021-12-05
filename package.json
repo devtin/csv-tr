@@ -1,8 +1,13 @@
 {
   "name": "csv-tr",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "utility to transform csv files",
   "main": "lib/csvTr.js",
+  "files": [
+    "bin/*",
+    "lib/*",
+    "package-lock.json"
+  ],
   "keywords": [
     "csv",
     "transform",
