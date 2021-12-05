@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const { program } = require('commander');
-const csv = require('csv-parser');
+const version = require('../package.json').version
 
 const { streamFromFileOrInput } = require('./utils/streamFromFileOrInput');
 const { getOptions } = require('./utils/getOptions');
@@ -33,9 +33,9 @@ const output = (stream) => {
 }
 
 program
-    .version('0.0.1')
-    .description('csv transformer')
-    .argument('[source]')
+    .version(version)
+    .description('transforms given csv file or stream and outputs the result')
+    .argument('[source | input stream]')
     .option('-o, --only <headers>', 'Output only specified headers (separated by comma). Not to be used with --exclude.')
     .option('-e, --exclude <headers>', 'Exclude specified headers (comma separated). Not to be used with --only.')
     .option('-t, --transformer <js-expression>', 'JS expression to transform each <entry>. Ej: -t "entry.email = entry.email.toLowerCase()"')
@@ -49,7 +49,7 @@ program
         }
 
         const opts = getOptions(program.opts())
-        const { only, exclude } = opts
+        const { only, exclude, sort } = opts
 
         const transformer = getTransformFn(opts.transformer)
         const filter = getFilterFunction(opts.filter)
@@ -59,10 +59,10 @@ program
             return process.exit(1)
         }
 
-        const csvStream = inputStream.pipe(csv()).pipe(csvTr({ transformer, filter, only, exclude }))
+        const csvStream = csvTr(inputStream, { transformer, filter, only, exclude })
 
-        if (Object.keys(opts.sort).length > 0) {
-          return output(await bubbleSort(csvStream, opts.sort))
+        if (sort && Object.keys(sort).length > 0) {
+          return output(await bubbleSort(csvStream, sort))
         }
 
         return output(csvStream)

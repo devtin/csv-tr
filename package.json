@@ -1,8 +1,8 @@
 {
   "name": "csv-tr",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "utility to transform csv files",
-  "main": "lib/csvTr.js",
+  "main": "index.js",
   "files": [
     "bin/*",
     "lib/*",
@@ -16,6 +16,11 @@
   ],
   "bin": {
     "csv-tr": "bin/csv-tr.js"
+  },
+  "homepage": "https://github.com/devtin/csv-tr#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devtin/csv-tr.git"
   },
   "author": "Martin Gonzalez <tin@devtin.io>",
   "license": "MIT",
