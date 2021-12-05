@@ -6,7 +6,7 @@ const { streamFromFileOrInput } = require('./utils/streamFromFileOrInput');
 const { getOptions } = require('./utils/getOptions');
 const { csvTr } = require('../lib/csvTr');
 const { csvStringify } = require('../lib/csvStringify');
-const { bubbleSort } = require('../lib/bubbleSort');
+const { sort: streamSort } = require('../lib/sort');
 
 const getTransformFn = (expression) => {
     if (!expression) {
@@ -62,7 +62,7 @@ program
         const csvStream = csvTr(inputStream, { transformer, filter, only, exclude })
 
         if (sort && Object.keys(sort).length > 0) {
-          return output(await bubbleSort(csvStream, sort))
+          return output(await streamSort(csvStream, sort))
         }
 
         return output(csvStream)

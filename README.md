@@ -127,7 +127,7 @@ Using all above's examples at once.
 
 ```js
 const fs = require('fs');
-const { csvTr, bubbleSort, csvStringify } = require('csv-tr');
+const { csvTr, sort, csvStringify } = require('csv-tr');
 
 csvTr(fs.createReadStream('contacts.csv'), {
   // filter: (entry) => { return /@gmail.com$/i.test(entry.email) },
@@ -140,7 +140,7 @@ csvTr(fs.createReadStream('contacts.csv'), {
 // mind sorting buffers all entries
 const csvStreamToSort = csvTr(fs.createReadStream('contacts.csv'))
 
-bubbleSort(csvStreamToSort, { state: -1, name: 1 }).then(sortedStream => {
+sort(csvStreamToSort, { state: -1, name: 1 }).then(sortedStream => {
   sortedStream.pipe(csvStringify()).pipe(fs.createWriteStream('result-sorted.csv'))
 })
 ```
