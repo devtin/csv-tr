@@ -9,6 +9,7 @@ help me transform long csv files. This utility should:
 
 - [Filter entries using JS expression](#filtering-entries)
 - [Transform entries using JS expression](#transforming-entries)
+- [Sorts entries by multiple header names](#transforming-entries)
 - [Select headers](#)
 
 ## CLI Usage
@@ -19,24 +20,22 @@ Usage: csv-tr [options] [source]
 csv transformer
 
 Options:
-  -V, --version                    output the version number
-  -o, --only <headers>             Only export defined columns (comma separated). Cannot be used along with
-                                   --exclude.
-  -e, --exclude <headers>          Exclude defined columns (comma separated). Cannot be used along with
-                                   --only.
-  -t, --transformer <js-function>  JS expression to transform each <entry>. Ej: -t "entry.email =
-                                   entry.email.toLowerCase()"
-  -f, --filter <js-function>       JS expression to filter each <entry>. Ej: -t "entry.state === 'FL'"
-  -h, --help                       display help for command
+  -V, --version                      output the version number
+  -o, --only <headers>               Output only specified headers (separated by comma). Not to be used with --exclude.
+  -e, --exclude <headers>            Exclude specified headers (comma separated). Not to be used with --only.
+  -t, --transformer <js-expression>  JS expression to transform each <entry>. Ej: -t "entry.email = entry.email.toLowerCase()"
+  -f, --filter <js-expression>       JS expression to filter each <entry>. Ej: -f "entry.state === 'FL'"
+  -s, --sort <sort-expression>       Sort entries by header. Ej: -s "firstName:1,lastName:-1"
+  -h, --help
 ```
 
 Imagine a CSV file called `contacts.csv` with content
 
 ```csv
-"name","email","state"
-"Juan","juan@gmail.com","FL"
-"Miguel","miguel@hotmail.com","NY"
-"Jesus","jesus@gmail.com","NY"
+name,email,state
+Juan,juan@gmail.com,FL
+Miguel,miguel@hotmail.com,NY
+Jesus,jesus@gmail.com,NY
 ```
 
 ### Filtering entries
@@ -50,9 +49,9 @@ csv-tr contacts.csv -f "/@gmail.com$/i.test(entry.email)" > gmail-contacts.csv
 `gmail-contacts.csv` will look like
 
 ```csv
-"name","email","state"
-"Juan","juan@gmail.com","FL"
-"Jesus","jesus@gmail.com","NY"
+name,email,state
+Juan,juan@gmail.com,FL
+Jesus,jesus@gmail.com,NY
 ```
 
 ### Transforming entries
@@ -60,16 +59,16 @@ csv-tr contacts.csv -f "/@gmail.com$/i.test(entry.email)" > gmail-contacts.csv
 Transforming values
 
 ```shell
-csv-tr contacts.csv -t "entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); entry.initial = entry.firstName[0]" > contacts-uppercase.csv
+csv-tr contacts.csv -t "entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); entry.initial = entry.name[0]" > contacts-uppercase.csv
 ```
 
 `contacts-uppercase.csv` will look like
 
 ```csv
-"name","email","state","initial"
-"JUAN","JUAN@GMAIL.COM","FL","J"
-"MIGUEL","MIGUEL@HOTMAIL.COM","NY","M"
-"JESUS","JESUS@GMAIL.COM","NY","J"
+name,email,state,initial
+JUAN,JUAN@GMAIL.COM,FL,J
+MIGUEL,MIGUEL@HOTMAIL.COM,NY,M
+JESUS,JESUS@GMAIL.COM,NY,J
 ```
 
 ### Including only certain headers 
@@ -83,10 +82,10 @@ csv-tr contacts.csv -o email,state > contact-email-state.csv
 `contacts-uppercase.csv` will look like
 
 ```csv
-"email","state"
-"juan@gmail.com","FL"
-"miguel@hotmail.com","NY"
-"jesus@gmail.com","NY"
+email,state
+juan@gmail.com,FL
+miguel@hotmail.com,NY
+jesus@gmail.com,NY
 ```
 
 ### Excluding certain headers
@@ -100,10 +99,26 @@ csv-tr contacts.csv -e email,state > contact-names.csv
 `contacts-uppercase.csv` will look like
 
 ```csv
-"name"
-"Juan"
-"Miguel"
-"Jesus"
+name
+Juan
+Miguel
+Jesus
+```
+
+### Sorting entries by header
+
+Sorting by `state` -> `ASC` and `name` -> `DESC`:
+
+```shell
+csv-tr contacts.csv -s state:1,name:-1 > contacts-sort.csv
+```
+ Will output:
+
+```csv
+name,email,state
+Juan,juan@gmail.com,FL
+Miguel,miguel@hotmail.com,NY
+Jesus,jesus@gmail.com,NY
 ```
 
 ## API Usage
@@ -116,9 +131,10 @@ const { csvTr } = require('csv-tr');
 
 fs.createReadStream('contacts.csv').pipe(csvTr({
     // filter: (entry) => { return /@gmail.com$/i.test(entry.email) },
-    // transformer: (entry) => { entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); return entry }
-    // only: ['email', 'state]
-    // exclude: ['email', 'state]
+    // transformer: (entry) => { entry.name = entry.name.toUpperCase(); entry.email = entry.email.toUpperCase(); return entry },
+    // only: ['email', 'state],
+    // exclude: ['email', 'state],
+    // sort: { firstName: 1, lastName: -1 },
 })).pipe(fs.createWriteStream('result.csv'))
 ```
 

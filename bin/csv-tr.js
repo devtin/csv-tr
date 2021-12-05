@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 const { program } = require('commander');
-
 const csv = require('csv-parser');
-const { csvTr } = require('../lib/csvTr');
+
 const { streamFromFileOrInput } = require('./utils/streamFromFileOrInput');
-const { getOptions } = require('./utils/getOptions')
+const { getOptions } = require('./utils/getOptions');
+const { csvTr } = require('../lib/csvTr');
+const { csvStringify } = require('../lib/csvStringify');
+const { bubbleSort } = require('../lib/bubbleSort');
 
 const getTransformFn = (expression) => {
     if (!expression) {
@@ -23,9 +25,11 @@ const getFilterFunction = (expression) => {
 const getStreaming = (source) => {
     try {
         return streamFromFileOrInput(source)
-    } catch (error) {
-        return
-    }
+    } catch (error) {}
+}
+
+const output = (stream) => {
+  return stream.pipe(csvStringify()).pipe(process.stdout)
 }
 
 program
@@ -36,7 +40,8 @@ program
     .option('-e, --exclude <headers>', 'Exclude specified headers (comma separated). Not to be used with --only.')
     .option('-t, --transformer <js-expression>', 'JS expression to transform each <entry>. Ej: -t "entry.email = entry.email.toLowerCase()"')
     .option('-f, --filter <js-expression>', 'JS expression to filter each <entry>. Ej: -f "entry.state === \'FL\'"')
-    .action((source) => {
+    .option('-s, --sort <sort-expression>', 'Sort entries by header. Ej: -s "firstName:1,lastName:-1"')
+    .action(async (source) => {
         const inputStream = getStreaming(source)
 
         if (!inputStream) {
@@ -54,7 +59,13 @@ program
             return process.exit(1)
         }
 
-        inputStream.pipe(csv()).pipe(csvTr({ transformer, filter, only, exclude })).pipe(process.stdout)
+        const csvStream = inputStream.pipe(csv()).pipe(csvTr({ transformer, filter, only, exclude }))
+
+        if (Object.keys(opts.sort).length > 0) {
+          return output(await bubbleSort(csvStream, opts.sort))
+        }
+
+        return output(csvStream)
     })
 
 program.parse(process.argv)
