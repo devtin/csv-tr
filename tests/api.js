@@ -1,5 +1,5 @@
-const fs = require('fs');
-const { csvTr, sort, csvStringify } = require('../');
+const fs = require('fs')
+const { csvTr, sort, csvStringify } = require('../')
 
 csvTr(fs.createReadStream('contacts.csv'), {
   // filter: (entry) => { return /@gmail.com$/i.test(entry.email) },
