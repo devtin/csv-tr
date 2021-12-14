@@ -14,7 +14,7 @@ const getTransformFn = (expression) => {
     return
   }
   /* eslint-disable-next-line */
-  return eval(`(entry) => { ${expression}; return entry; }`)
+  return eval(`'use strict';\n(row, index) => { ${expression}; return row; }`)
 }
 
 const getFilterFunction = (expression) => {
@@ -22,7 +22,7 @@ const getFilterFunction = (expression) => {
     return
   }
   /* eslint-disable-next-line */
-  return eval(`(entry, index) => { return ${expression}; }`)
+  return eval(`'use strict';\n(row, index) => { return ${expression}; }`)
 }
 
 const getStreaming = (source) => {
@@ -47,14 +47,16 @@ const csvTrCli = async (source) => {
   const opts = getOptions(program.opts())
   const { only, exclude, sort } = opts
 
-  const transformer = getTransformFn(opts.transformer)
+  const transform = getTransformFn(opts.transform)
   const filter = getFilterFunction(opts.filter)
 
   if (opts.only.length > 0 && opts.exclude.length > 0) {
     throw new Error('option \'--exclude\' and \'--only\' cannot be used simultaneously')
   }
 
-  const csvStream = csvTr(inputStream, { transformer, filter, only, exclude })
+  const csvStream = csvTr(inputStream, { transform, filter, only, exclude })
+
+  csvStream.on('error', errorHandler)
 
   if (sort && Object.keys(sort).length > 0) {
     return output(await streamSort(csvStream, sort))
@@ -67,11 +69,11 @@ program
   .version(version)
   .description('transforms given csv file or stream and outputs the result')
   .argument('[source | input stream]')
-  .option('-o, --only <headers>', 'Output only specified headers (separated by comma). Not to be used with --exclude.')
-  .option('-e, --exclude <headers>', 'Exclude specified headers (comma separated). Not to be used with --only.')
-  .option('-t, --transformer <js-expression>', 'JS expression to transform each <entry>. Ej: -t "entry.email = entry.email.toLowerCase()"')
-  .option('-f, --filter <js-expression>', 'JS expression to filter each <entry>. Ej: -f "entry.state === \'FL\'"')
-  .option('-s, --sort <sort-expression>', 'Sort entries by header. Ej: -s "firstName:1,lastName:-1"')
+  .option('-o, --only <columns>', 'output only specified columns (comma separated). Not to be used with --exclude.')
+  .option('-e, --exclude <columns>', 'exclude specified columns (comma separated). Not to be used with --only.')
+  .option('-t, --transform <js-expression>', 'transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"')
+  .option('-f, --filter <js-expression>', 'filter rows by given JavaScript expression. Ej: -f "row.state === \'FL\'"')
+  .option('-s, --sort <sort-expression>', 'sort entries by column. Ej: -s "firstName:1,lastName:-1"')
   .action(async (source) => {
     try {
       await csvTrCli(source)

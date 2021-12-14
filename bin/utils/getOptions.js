@@ -23,7 +23,7 @@ const getOptions = R.applySpec({
   only: R.compose(asArray, R.prop('only')),
   exclude: R.compose(asArray, R.prop('exclude')),
   chunk: R.prop('chunk'),
-  transformer: R.prop('transformer'),
+  transform: R.prop('transform'),
   filter: R.prop('filter'),
   sort: R.compose(arrayAsObj, R.map(semiColonValues), asArray, R.prop('sort'))
 })
