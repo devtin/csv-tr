@@ -13,6 +13,18 @@ help me transform long csv files. This utility should:
 - [Select columns](#including-only-certain-headers)
 - [Sort columns](#including-only-certain-headers)
 
+## Installation
+
+```shell
+npm install --global csv-tr
+```
+
+or using `yarn`
+
+```shell
+yarn add global csv-tr
+```
+
 ## CLI usage
 
 ```text
@@ -21,13 +33,13 @@ Usage: csv-tr [options] [source | input stream]
 transforms given csv file or stream and outputs the result
 
 Options:
-  -V, --version                      output the version number
-  -o, --only <headers>               Output only specified headers (separated by comma). Not to be used with --exclude.
-  -e, --exclude <headers>            Exclude specified headers (comma separated). Not to be used with --only.
-  -t, --transform <js-expression>  JS expression to transform each <row>. Ej: -t "row.email = row.email.toLowerCase()"
-  -f, --filter <js-expression>       JS expression to filter each <row>. Ej: -f "row.state === 'FL'"
-  -s, --sort <sort-expression>       Sort entries by header. Ej: -s "firstName:1,lastName:-1"
-  -h, --help                         display help for command
+  -V, --version                    output the version number
+  -o, --only <columns>             output only specified columns (comma separated). Not to be used with --exclude.
+  -e, --exclude <columns>          exclude specified columns (comma separated). Not to be used with --only.
+  -t, --transform <js-expression>  transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"
+  -f, --filter <js-expression>     filter rows by given JavaScript expression. Ej: -f "row.state === 'FL'"
+  -s, --sort <sort-expression>     sort entries by column. Ej: -s "firstName:1,lastName:-1"
+  -h, --help                       display help for command
 ```
 
 ## Input sample
@@ -67,10 +79,10 @@ Jesus,jesus@gmail.com,NY
 **Slicing a given range of rows using the `index` value**
 
 ```shell
-csv-tr contacts.csv -f "index > 0 && index < 2" > gmail-contacts.csv
+csv-tr contacts.csv -f "index > 0 && index < 2"
 ```
 
-Would display:
+Would output:
 
 ```csv
 name,email,state
@@ -106,7 +118,7 @@ Using the same `contacts.csv` [input sample](#input-sample).
 csv-tr contacts.csv -o email,state > contact-email-state.csv
 ```
 
-`contacts-uppercase.csv` would look like:
+`contact-email-state.csv` would look like:
 
 ```csv
 email,state
@@ -123,7 +135,7 @@ Using the same `contacts.csv` [input sample](#input-sample).
 csv-tr contacts.csv -e email,state > contact-names.csv
 ```
 
-`contacts-uppercase.csv` would look like:
+`contact-names.csv` would look like:
 
 ```csv
 name
@@ -137,7 +149,7 @@ Jesus
 Using the same `contacts.csv` [input sample](#input-sample), imagine sorting by `state` -> `DESC` and `name` -> `ASC`:
 
 ```shell
-csv-tr contacts.csv -s state:-1,name:1 > contacts-sort.csv
+csv-tr contacts.csv -s state:-1,name:1
 ```
 Would output:
 
@@ -150,17 +162,18 @@ Juan,juan@gmail.com,FL
 
 ## API Usage
 
-Using all above's examples at once.
+Using all above's examples at once with the same `contacts.csv` [input sample](#input-sample)
 
 ```js
 const fs = require('fs');
 const { csvTr, sort, csvStringify } = require('csv-tr');
 
-csvTr(fs.createReadStream('contacts.csv'), {
+// un-comment any or multiple of the options below, run it and then take a look at result.csv
+csvTr(fs.createReadStream('./tests/contacts.csv'), {
   // filter: (row) => { return /@gmail.com$/i.test(row.email) },
   // transform: (row) => { row.name = row.name.toUpperCase(); row.email = row.email.toUpperCase(); return row },
-  // only: ['email', 'state],
-  // exclude: ['email', 'state],
+  // only: ['email', 'state'],
+  // exclude: ['email', 'state'],
 }).pipe(csvStringify()).pipe(fs.createWriteStream('result.csv'))
 
 // SORTING
