@@ -19,10 +19,16 @@ help me transform long csv files. This utility should:
 npm install --global csv-tr
 ```
 
-or using `yarn`
+using `yarn`
 
 ```shell
 yarn add global csv-tr
+```
+
+using `npx`
+
+```shell
+npx csv-tr --help
 ```
 
 ## CLI usage
@@ -42,7 +48,7 @@ Options:
   -h, --help                       display help for command
 ```
 
-## Input sample
+### Input sample
 Imagine a CSV file called `contacts.csv` with content
 
 ```csv
@@ -54,15 +60,18 @@ Jesus,jesus@gmail.com,NY
 
 ### Filtering rows
 
+Filtering values using the option `--filter` or `-f` followed by a JavaScript expression that will be evaluated
+against a function that must return boolean, and looks like:
+
+```js
+(row, index) => { return /* your JavaScript expression */ }
+```
+
 Each `row` is nothing but a row of the csv file represented as a JSON object streamed by
 <a href="https://github.com/mafintosh/csv-parser" target="_blank">csv-parser</a>.
 
 The `index` value is given row number starting at `0`. Meaning `index` of the first row (which is not the header)
-equals `0`. 
-
-Filtering values using the option `--filter` or `-f` followed by a JavaScript expression that will be evaluated
-against a function that looks like `(row, index) => { return /* your JavaScript expression */ }` and should return
-boolean.
+equals `0`.
 
 ```shell
 csv-tr contacts.csv -f "/@gmail.com$/i.test(row.email)" > gmail-contacts.csv
@@ -92,8 +101,13 @@ Miguel,miguel@hotmail.com,NY
 ### Transforming rows
 
 Transforming values using the option `--transform` or `-t` followed by a JavaScript expression that will be evaluated
-against a function that looks like `(row, index) => { /* your js expression */ }`. Just transform the keys (columns) of
-the `row` object.
+against a function that looks like.
+
+```js
+(row, index) => {
+  /* your js mutations go here */
+}
+```
 
 Using the same `contacts.csv` [input sample](#input-sample).
 
@@ -148,6 +162,8 @@ Jesus
 
 Using the same `contacts.csv` [input sample](#input-sample), imagine sorting by `state` -> `DESC` and `name` -> `ASC`:
 
+Sorting will guess numeric and date kind of values, and treat them accordingly.
+
 ```shell
 csv-tr contacts.csv -s state:-1,name:1
 ```
@@ -170,8 +186,8 @@ const { csvTr, sort, csvStringify } = require('csv-tr');
 
 // un-comment any or multiple of the options below, run it and then take a look at result.csv
 csvTr(fs.createReadStream('./tests/contacts.csv'), {
-  // filter: (row) => { return /@gmail.com$/i.test(row.email) },
-  // transform: (row) => { row.name = row.name.toUpperCase(); row.email = row.email.toUpperCase(); return row },
+  // filter: (row, index) => { return /@gmail.com$/i.test(row.email) },
+  // transform: (row, index) => { row.name = row.name.toUpperCase(); row.email = row.email.toUpperCase(); return row },
   // only: ['email', 'state'],
   // exclude: ['email', 'state'],
 }).pipe(csvStringify()).pipe(fs.createWriteStream('result.csv'))
