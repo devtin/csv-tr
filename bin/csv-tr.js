@@ -73,7 +73,7 @@ program
   .option('-e, --exclude <columns>', 'exclude specified columns (comma separated). Not to be used with --only.')
   .option('-t, --transform <js-expression>', 'transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"')
   .option('-f, --filter <js-expression>', 'filter rows by given JavaScript expression. Ej: -f "row.state === \'FL\'"')
-  .option('-s, --sort <sort-expression>', 'sort entries by column. Ej: -s "firstName:1,lastName:-1"')
+  .option('-s, --sort <[sort-column]:[sort-order: 1=ASC | -1=DESC]>', 'sorts rows by column:order (comma separated) Ej: -s "firstName:1,lastName:-1"')
   .action(async (source) => {
     try {
       await csvTrCli(source)

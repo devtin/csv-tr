@@ -1,14 +1,20 @@
 # csv-tr
 
-Utility to transform csv files
+<p>
+    <a href="https://www.npmjs.com/package/csv-tr" target="_blank"><img src="https://img.shields.io/npm/v/csv-tr.svg" alt="Version"></a>
+<a href="http://opensource.org/licenses" target="_blank"><img src="http://img.shields.io/badge/License-MIT-brightgreen.svg"></a>
+</p>
+
+
+Tool to transform csv files
 
 ## Manifesto
 
-Transforming long csv files using graphic user interfaces may not be the most efficient at times. I wanted a utility to
-help me transform long csv files. This utility should:
+Transforming long csv files using graphic user interfaces might not be the most efficient at times. I want an utility that
+helps me transform long csv files. This utility should:
 
-- [Filter rows using JS expression](#filtering-rows)
-- [Transform rows using JS expression](#transforming-rows)
+- [Filter rows using JavaScript expressions](#filtering-rows)
+- [Transform rows using JavaScript expressions](#transforming-rows)
 - [Sort rows by multiple header names](#sorting-rows-by-header)
 - [Select columns](#including-only-certain-headers)
 - [Sort columns](#including-only-certain-headers)
@@ -44,7 +50,7 @@ Options:
   -e, --exclude <columns>          exclude specified columns (comma separated). Not to be used with --only.
   -t, --transform <js-expression>  transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"
   -f, --filter <js-expression>     filter rows by given JavaScript expression. Ej: -f "row.state === 'FL'"
-  -s, --sort <sort-expression>     sort entries by column. Ej: -s "firstName:1,lastName:-1"
+  -s, --sort <sort-expression>     sort rows by column. Ej: -s "firstName:1,lastName:-1"
   -h, --help                       display help for command
 ```
 
@@ -158,7 +164,7 @@ Miguel
 Jesus
 ```
 
-### Sorting entries by header
+### Sorting rows by header
 
 Using the same `contacts.csv` [input sample](#input-sample), imagine sorting by `state` -> `DESC` and `name` -> `ASC`:
 

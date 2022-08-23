@@ -9,7 +9,7 @@ csvTr(fs.createReadStream('contacts.csv'), {
 }).pipe(csvStringify()).pipe(fs.createWriteStream('result.csv'))
 
 // SORTING
-// mind sorting buffers all entries
+// mind sorting buffers all rows
 const csvStreamToSort = csvTr(fs.createReadStream('contacts.csv'))
 
 sort(csvStreamToSort, { state: -1, name: 1 }).then(sortedStream => {
