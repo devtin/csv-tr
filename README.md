@@ -48,8 +48,8 @@ Options:
   -V, --version                    output the version number
   -o, --only <columns>             output only specified columns (comma separated). Not to be used with --exclude.
   -e, --exclude <columns>          exclude specified columns (comma separated). Not to be used with --only.
-  -t, --transform <js-expression>  transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"
-  -f, --filter <js-expression>     filter rows by given JavaScript expression. Ej: -f "row.state === 'FL'"
+  -t, --transform <js-file|js-expression>  transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"
+  -f, --filter <js-file|js-expression>     filter rows by given JavaScript expression. Ej: -f "row.state === 'FL'"
   -s, --sort <sort-expression>     sort rows by column. Ej: -s "firstName:1,lastName:-1"
   -h, --help                       display help for command
 ```
@@ -71,6 +71,15 @@ against a function that must return boolean, and looks like:
 
 ```js
 (row, index) => { return /* your JavaScript expression */ }
+```
+
+Alternatively a file that exports a function with the same signature is also accepted:
+
+```js
+// my-filter-file
+module.exports = (row/* , index */) => {
+  return /@gmail.com$/i.test(row.email)
+}
 ```
 
 Each `row` is nothing but a row of the csv file represented as a JSON object streamed by
@@ -112,6 +121,19 @@ against a function that looks like.
 ```js
 (row, index) => {
   /* your js mutations go here */
+}
+```
+
+Alternatively a file that exports a function with the same signature is also accepted:
+
+```js
+// my-transform-file
+module.exports = (row/* , index */) => {
+  row.name = row.name.toUpperCase()
+  row.email = row.email.toUpperCase()
+  row.initial = row.name[0]
+
+  return row
 }
 ```
 
