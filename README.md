@@ -76,14 +76,14 @@ Filtering values using the option `--filter` or `-f` followed by a JavaScript ex
 against a function that must return boolean, and looks like:
 
 ```js
-($, index) => { return /* your JavaScript expression */ }
+($, $line) => { return /* your JavaScript expression */ }
 ```
 
 Alternatively a file that exports a function with the same signature is also accepted:
 
 ```js
 // my-filter-file
-module.exports = ($/* , index */) => {
+module.exports = ($/* , $line */) => {
   return /@gmail.com$/i.test($.email)
 }
 ```
@@ -91,7 +91,7 @@ module.exports = ($/* , index */) => {
 Each `$` is nothing but a line of the csv file represented as a JSON object streamed by
 <a href="https://github.com/mafintosh/csv-parser" target="_blank">csv-parser</a>.
 
-The `index` value is given $ number starting at `0`. Meaning `index` of the first $ (which is not the column names header)
+The `$line` value is given $ number starting at `0`. Meaning `$line` of the first $ (which is not the column names header)
 equals `0`.
 
 ```shell
@@ -106,10 +106,10 @@ Juan,juan@gmail.com,FL
 Jesus,jesus@gmail.com,NY
 ```
 
-**Slicing a given range of rows using the `index` value**
+**Slicing a given range of rows using the `$line` value**
 
 ```shell
-csv-tr contacts.csv -f 'index > 0 && index < 2'
+csv-tr contacts.csv -f '$line > 0 && $line < 2'
 ```
 
 Would output:
@@ -125,7 +125,7 @@ Transforming values using the option `--transform` or `-t` followed by a JavaScr
 against a function that looks like.
 
 ```js
-($, index) => {
+($, $line) => {
   /* your js mutations go here */
 }
 ```
@@ -134,7 +134,7 @@ Alternatively a file that exports a function with the same signature is also acc
 
 ```js
 // my-transform-file
-module.exports = ($/* , index */) => {
+module.exports = ($/* , $line */) => {
   $.name = $.name.toUpperCase()
   $.email = $.email.toUpperCase()
   $.initial = $.name[0]
@@ -221,8 +221,8 @@ const { csvTr, sort, csvStringify } = require('csv-tr');
 
 // un-comment any or multiple of the options below, run it and then take a look at result.csv
 csvTr(fs.createReadStream('./tests/contacts.csv'), {
-  // filter: ($, index) => { return /@gmail.com$/i.test($.email) },
-  // transform: ($, index) => { $.name = $.name.toUpperCase(); $.email = $.email.toUpperCase(); return $ },
+  // filter: ($, $line) => { return /@gmail.com$/i.test($.email) },
+  // transform: ($, $line) => { $.name = $.name.toUpperCase(); $.email = $.email.toUpperCase(); return $ },
   // only: ['email', 'state'],
   // exclude: ['email', 'state'],
 }).pipe(csvStringify()).pipe(fs.createWriteStream('result.csv'))
