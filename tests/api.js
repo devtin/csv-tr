@@ -2,8 +2,8 @@ const fs = require('fs')
 const { csvTr, sort, csvStringify } = require('../')
 
 csvTr(fs.createReadStream('contacts.csv'), {
-  // filter: (row, index) => { return /@gmail.com$/i.test(row.email) },
-  // transform: (row, index) => { row.name = row.name.toUpperCase(); row.email = row.email.toUpperCase(); return row },
+  // filter: ($, index) => { return /@gmail.com$/i.test($.email) },
+  // transform: ($, index) => { $.name = $.name.toUpperCase(); $.email = $.email.toUpperCase(); return $ },
   // only: ['email', 'state],
   // exclude: ['email', 'state],
 }).pipe(csvStringify()).pipe(fs.createWriteStream('result.csv'))

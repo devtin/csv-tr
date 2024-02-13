@@ -54,8 +54,8 @@ Options:
   -V, --version                                             output the version number
   -o, --only <columns>                                      output only specified columns (comma separated). Not to be used with --exclude.
   -e, --exclude <columns>                                   exclude specified columns (comma separated). Not to be used with --only.
-  -t, --transform <js-file|js-expression>                   transform rows by given JavaScript expression. Ej: -t "{ email: row.email.toLowerCase() }"
-  -f, --filter <js-file|js-expression>                      filter rows by given JavaScript file or expression. Ej: -f "row.state === 'FL'"
+  -t, --transform <js-file|js-expression>                   transform rows by given JavaScript expression. Ej: -t "{ email: $.email.toLowerCase() }"
+  -f, --filter <js-file|js-expression>                      filter rows by given JavaScript file or expression. Ej: -f "$.state === 'FL'"
   -s, --sort <[sort-column]:[sort-order: 1=ASC | -1=DESC]>  sorts rows by column:order (comma separated) Ej: -s "firstName:1,lastName:-1"
   -h, --help                                                display help for command
 ```
@@ -76,26 +76,26 @@ Filtering values using the option `--filter` or `-f` followed by a JavaScript ex
 against a function that must return boolean, and looks like:
 
 ```js
-(row, index) => { return /* your JavaScript expression */ }
+($, index) => { return /* your JavaScript expression */ }
 ```
 
 Alternatively a file that exports a function with the same signature is also accepted:
 
 ```js
 // my-filter-file
-module.exports = (row/* , index */) => {
-  return /@gmail.com$/i.test(row.email)
+module.exports = ($/* , index */) => {
+  return /@gmail.com$/i.test($.email)
 }
 ```
 
-Each `row` is nothing but a line of the csv file represented as a JSON object streamed by
+Each `$` is nothing but a line of the csv file represented as a JSON object streamed by
 <a href="https://github.com/mafintosh/csv-parser" target="_blank">csv-parser</a>.
 
-The `index` value is given row number starting at `0`. Meaning `index` of the first row (which is not the column names header)
+The `index` value is given $ number starting at `0`. Meaning `index` of the first $ (which is not the column names header)
 equals `0`.
 
 ```shell
-csv-tr contacts.csv -f '/@gmail.com$/i.test(row.email)' > gmail-contacts.csv
+csv-tr contacts.csv -f '/@gmail.com$/i.test($.email)' > gmail-contacts.csv
 ```
 
 `gmail-contacts.csv` would look like:
@@ -125,7 +125,7 @@ Transforming values using the option `--transform` or `-t` followed by a JavaScr
 against a function that looks like.
 
 ```js
-(row, index) => {
+($, index) => {
   /* your js mutations go here */
 }
 ```
@@ -134,19 +134,19 @@ Alternatively a file that exports a function with the same signature is also acc
 
 ```js
 // my-transform-file
-module.exports = (row/* , index */) => {
-  row.name = row.name.toUpperCase()
-  row.email = row.email.toUpperCase()
-  row.initial = row.name[0]
+module.exports = ($/* , index */) => {
+  $.name = $.name.toUpperCase()
+  $.email = $.email.toUpperCase()
+  $.initial = $.name[0]
 
-  return row
+  return $
 }
 ```
 
 Using the same `contacts.csv` [input sample](#input-sample).
 
 ```shell
-csv-tr contacts.csv -t '{ name: row.name.toUpperCase(), email: row.email.toUpperCase(), initial: row.name[0] }' > contacts-uppercase.csv
+csv-tr contacts.csv -t '{ name: $.name.toUpperCase(), email: $.email.toUpperCase(), initial: $.name[0] }' > contacts-uppercase.csv
 ```
 
 `contacts-uppercase.csv` would look like:
@@ -221,8 +221,8 @@ const { csvTr, sort, csvStringify } = require('csv-tr');
 
 // un-comment any or multiple of the options below, run it and then take a look at result.csv
 csvTr(fs.createReadStream('./tests/contacts.csv'), {
-  // filter: (row, index) => { return /@gmail.com$/i.test(row.email) },
-  // transform: (row, index) => { row.name = row.name.toUpperCase(); row.email = row.email.toUpperCase(); return row },
+  // filter: ($, index) => { return /@gmail.com$/i.test($.email) },
+  // transform: ($, index) => { $.name = $.name.toUpperCase(); $.email = $.email.toUpperCase(); return $ },
   // only: ['email', 'state'],
   // exclude: ['email', 'state'],
 }).pipe(csvStringify()).pipe(fs.createWriteStream('result.csv'))
