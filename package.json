@@ -1,6 +1,6 @@
 {
   "name": "csv-tr",
-  "version": "2.0.6",
+  "version": "3.0.0",
   "description": "cli utility to manipulate (filter, search, sort and transform) long csv files lightning fast",
   "main": "index.js",
   "scripts": {

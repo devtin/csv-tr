@@ -49,7 +49,7 @@ const getTransformFn = (expression) => {
   }
 
   /* eslint-disable-next-line */
-  return eval(`'use strict';\n(row, index) => { return ${expression}; }`)
+  return eval(`'use strict';\n($, index) => { return ${expression}; }`)
 }
 
 const getFilterFunction = (expression) => {
@@ -64,7 +64,7 @@ const getFilterFunction = (expression) => {
   }
 
   /* eslint-disable-next-line */
-  return eval(`'use strict';\n(row, index) => { return ${expression}; }`)
+  return eval(`'use strict';\n($, index) => { return ${expression}; }`)
 }
 
 const getStreaming = (source) => {
