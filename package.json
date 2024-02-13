@@ -29,11 +29,11 @@
   "author": "Martin Gonzalez <tin@devtin.io>",
   "license": "MIT",
   "dependencies": {
-    "commander": "^8.3.0",
+    "commander": "^12.0.0",
     "csv-parser": "^3.0.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.29.1"
   },
   "devDependencies": {
-    "standard": "^16.0.4"
+    "standard": "^17.1.0"
   }
 }
