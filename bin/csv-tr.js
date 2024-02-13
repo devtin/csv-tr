@@ -49,7 +49,7 @@ const getTransformFn = (expression) => {
   }
 
   /* eslint-disable-next-line */
-  return eval(`'use strict';\n(row, index) => { ${expression}; return row; }`)
+  return eval(`'use strict';\n(row, index) => { return ${expression}; }`)
 }
 
 const getFilterFunction = (expression) => {
@@ -113,9 +113,9 @@ program
   .argument('[source | input stream]')
   .option('-o, --only <columns>', 'output only specified columns (comma separated). Not to be used with --exclude.')
   .option('-e, --exclude <columns>', 'exclude specified columns (comma separated). Not to be used with --only.')
-  .option('-t, --transform <js-file|js-expression>', 'transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"')
-  .option('-f, --filter <js-file|js-expression>', 'filter rows by given JavaScript file or expression. Ej: -f "row.state === \'FL\'"')
-  .option('-s, --sort <[sort-column]:[sort-order: 1=ASC | -1=DESC]>', 'sorts rows by column:order (comma separated) Ej: -s "firstName:1,lastName:-1"')
+  .option('-t, --transform <js-file|js-expression>', 'transform rows by given JavaScript expression. Ej: -t \'{ email = $.email.toLowerCase() }\'')
+  .option('-f, --filter <js-file|js-expression>', 'filter rows by given JavaScript file or expression. Ej: -f \'$.state === "FL"\'')
+  .option('-s, --sort <[sort-column]:[sort-order: 1=ASC | -1=DESC]>', 'sorts rows by column:order (comma separated) Ej: -s \'firstName:1,lastName:-1\'')
   .action(async (source) => {
     try {
       await csvTrCli(source)

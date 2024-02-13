@@ -54,7 +54,7 @@ Options:
   -V, --version                                             output the version number
   -o, --only <columns>                                      output only specified columns (comma separated). Not to be used with --exclude.
   -e, --exclude <columns>                                   exclude specified columns (comma separated). Not to be used with --only.
-  -t, --transform <js-file|js-expression>                   transform rows by given JavaScript expression. Ej: -t "row.email = row.email.toLowerCase()"
+  -t, --transform <js-file|js-expression>                   transform rows by given JavaScript expression. Ej: -t "{ email: row.email.toLowerCase() }"
   -f, --filter <js-file|js-expression>                      filter rows by given JavaScript file or expression. Ej: -f "row.state === 'FL'"
   -s, --sort <[sort-column]:[sort-order: 1=ASC | -1=DESC]>  sorts rows by column:order (comma separated) Ej: -s "firstName:1,lastName:-1"
   -h, --help                                                display help for command
@@ -146,7 +146,7 @@ module.exports = (row/* , index */) => {
 Using the same `contacts.csv` [input sample](#input-sample).
 
 ```shell
-csv-tr contacts.csv -t 'row.name = row.name.toUpperCase(); row.email = row.email.toUpperCase(); row.initial = row.name[0]' > contacts-uppercase.csv
+csv-tr contacts.csv -t '{ name: row.name.toUpperCase(), email: row.email.toUpperCase(), initial: row.name[0] }' > contacts-uppercase.csv
 ```
 
 `contacts-uppercase.csv` would look like:
